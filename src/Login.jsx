@@ -1,5 +1,5 @@
-import React from "react";
 import { useForm } from "react-hook-form";
+import axios from "axios";
 
 const Login = () => {
   const {
@@ -9,7 +9,16 @@ const Login = () => {
   } = useForm();
 
   const onSubmit = (data) => {
+    console.log("Submitting form . . .");
     // submit logic here
+    axios
+      .post("https://netzwelt-devtest.azurewebsites.net/Account/SignIn", data)
+      .then((response) => {
+        console.log(response.data);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
   };
   return (
     <>
@@ -35,7 +44,7 @@ const Login = () => {
             </p>
           ) : null}
         </div>
-        <button>Login</button>
+        <button type="submit">Login</button>
       </form>
     </>
   );
