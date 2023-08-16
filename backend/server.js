@@ -1,16 +1,17 @@
 const express = require("express");
 const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
+const cors = require("cors");
 const axios = require("axios");
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3001;
 const secretKey = "some-random-key";
 
 app.use(express.json());
 app.use(cookieParser());
+app.use(cors({ origin: true, credentials: true }));
 
-// API endpoint to proxy the external API request
-app.get("/api/", async (req, res) => {
+app.get("/territories", async (req, res) => {
   try {
     const response = await axios.get(
       "https://netzwelt-devtest.azurewebsites.net/Territories/All"
@@ -32,10 +33,11 @@ app.post("/login", async (req, res) => {
       )
       .then((response) => {
         if (response.status == 200) {
-          const token = jwt.sign({ userId: response.data.username }, secretKey);
+          const token = jwt.sign(response.data.username, secretKey);
+
           res.cookie("jwt", token, {
+            maxAge: 24 * 60 * 60 * 1000,
             httpOnly: true,
-            secure: true,
           });
           res.status(200).send(token);
         } else {
