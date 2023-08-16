@@ -1,4 +1,5 @@
 import { useForm } from "react-hook-form";
+import { BrowserRouter as Redirect } from "react-router-dom";
 import axios from "axios";
 
 const Login = () => {
@@ -12,9 +13,20 @@ const Login = () => {
     console.log("Submitting form . . .");
     // submit logic here
     axios
-      .post("https://netzwelt-devtest.azurewebsites.net/Account/SignIn", data)
+      .post("http://localhost:3001/login", data)
       .then((response) => {
-        console.log(response.data);
+        console.log(response);
+        axios
+          .get("http://localhost:3001/protected", {
+            withCredentials: true,
+            credentials: "include",
+          })
+          .then((response) => {
+            response.status === 200 ? <Redirect to="/dashboard" /> : null;
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       })
       .catch((err) => {
         console.error(err);
