@@ -3,6 +3,11 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Dashboard.css";
 
+/*
+Name: createParentChildrenTree
+Parameters: data (array), parent (id)
+Function: Iterates through data array recursively to create a new array that lists out which children belong to which parent.
+*/
 const createParentChildrenTree = (data, parent) => {
   const children = data.filter((item) => item.parent === parent);
   return children.map((child) => ({
@@ -11,6 +16,11 @@ const createParentChildrenTree = (data, parent) => {
   }));
 };
 
+/*
+Name: mapParentChildrenTree
+Parameters: data (array)
+Function: Renders HTML elements to show the parent-child relationship of the data.
+*/
 const mapParentChildrenTree = (data) => {
   return data.map((item, i) => {
     if (item.children.length) {

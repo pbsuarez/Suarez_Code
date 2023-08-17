@@ -1,9 +1,12 @@
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import "./Login.css";
+import { useState } from "react";
 
 const Login = () => {
   const navigate = useNavigate();
+  const [showError, setShowError] = useState(false);
   const {
     register,
     handleSubmit,
@@ -11,6 +14,7 @@ const Login = () => {
   } = useForm();
 
   const onSubmit = (data) => {
+    setShowError(false);
     axios
       .post("http://localhost:3001/login", data, {
         withCredentials: true,
@@ -21,8 +25,13 @@ const Login = () => {
         navigate("/home/index");
       })
       .catch((err) => {
+        setShowError(true);
         console.error(err);
       });
+  };
+
+  const closeError = () => {
+    setShowError(false);
   };
   return (
     <>
@@ -49,6 +58,12 @@ const Login = () => {
           ) : null}
         </div>
         <button type="submit">Login</button>
+        {showError && (
+          <div>
+            <p style={{ color: "red" }}>Invalid username and/or password</p>
+            {closeError}
+          </div>
+        )}
       </form>
     </>
   );
