@@ -1,8 +1,9 @@
 import { useForm } from "react-hook-form";
-import { BrowserRouter as Redirect } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const Login = () => {
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -10,23 +11,14 @@ const Login = () => {
   } = useForm();
 
   const onSubmit = (data) => {
-    console.log("Submitting form . . .");
-    // submit logic here
     axios
-      .post("http://localhost:3001/login", data)
+      .post("http://localhost:3001/login", data, {
+        withCredentials: true,
+        credentials: "include",
+      })
       .then((response) => {
-        console.log(response);
-        axios
-          .get("http://localhost:3001/protected", {
-            withCredentials: true,
-            credentials: "include",
-          })
-          .then((response) => {
-            response.status === 200 ? <Redirect to="/dashboard" /> : null;
-          })
-          .catch((err) => {
-            console.log(err);
-          });
+        console.log(response.data);
+        navigate("/home/index");
       })
       .catch((err) => {
         console.error(err);
